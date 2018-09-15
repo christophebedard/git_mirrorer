@@ -2,6 +2,7 @@
 
 ## Script for mirroring (remote) git repos
 # Make sure to set the appropriate environment variables
+# Also, pass the branches you want to be mirrored as params
 
 import os
 import sys
