@@ -2,10 +2,10 @@
 
 ## Script for mirroring git remotes
 # Make sure to set the appropriate environment variables:
-#   ORIGIN_URL:       remote url of the origin repo
-#   DESTINATION_URL:  remote url of the destination repo
-#   BRANCHES_LIST:    [branch1,branch2,branch3]
-#   UPDATE_PERIOD:    delay between updates (seconds)
+#   ORIGIN_URL:       remote URL of the origin repo
+#   DESTINATION_URL:  remote URL of the destination repo
+#   BRANCHES_LIST:    list of branches to update, e.g. [branch1,branch2,branch3]
+#   UPDATE_PERIOD:    delay between updates (seconds) [default: 60]
 
 import os
 import sys
