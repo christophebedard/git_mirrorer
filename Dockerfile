@@ -13,6 +13,7 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 #ENV ORIGIN_URL
 #ENV DESTINATION_URL
 #ENV BRANCHES_LIST
+#ENV UPDATE_PERIOD
 
 # Run when the container launches
 CMD ["python", "git_mirrorer.py"]
