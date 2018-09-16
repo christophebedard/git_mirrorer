@@ -1,6 +1,6 @@
 # git_mirrorer
 
-Mirrors two git remotes
+Mirror two git remotes
 
 (alternate description: containerize everything!)
 
