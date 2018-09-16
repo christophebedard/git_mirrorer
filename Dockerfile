@@ -1,5 +1,9 @@
 FROM python:3-slim
 
+# Install git (not included in -slim)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git
+
 # Set the working directory to /app
 WORKDIR /app
 
