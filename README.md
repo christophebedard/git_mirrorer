@@ -16,3 +16,10 @@ Whether you use a container or call the Python script directly, set the followin
 ## What it does
 
 It periodically fetches an `origin` repo. If the last commit of a branch on the watchlist changed, it pushes that branch to the `destination`. It does not need to checkout or pull everything locally.
+
+## Authentication
+
+This currently expects one-time authentication methods in the remote URL itself. It does not currently use `GIT_ASKPASS`.
+
+* [tokens on GitHub](https://developer.github.com/v3/auth/#via-oauth-tokens) (e.g. remote URL: `https://<token>@github.com/<username>/<repo>.git`)
+* username/password authentication over HTTPS (e.g. remote URL: `https://<username>:<password>@github.com/<username>/<repo>.git`) or SSH
