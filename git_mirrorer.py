@@ -15,7 +15,7 @@ from git import Repo
 from_repo_url = os.environ['ORIGIN_URL']
 to_repo_url = os.environ['DESTINATION_URL']
 branches_list = os.environ['BRANCHES_LIST']
-update_period = int(os.getenv('UPDATE_PERIOD', 60)))
+update_period = int(os.getenv('UPDATE_PERIOD', 60))
 
 
 def extract_branches(branches_list):
@@ -23,10 +23,17 @@ def extract_branches(branches_list):
     return branches_list[1:-1].split(',')
 
 
-def update(remote, branches):
+def get_last_commits(remote, branches):
+    last_commits = {}
     for branch in branches:
-        print('pushing %s' % branch)
-        remote.push('origin/%s:refs/heads/%s' % (branch, branch))
+        fetch_info = remote.fetch(branch)[0]
+        last_commits[branch] = fetch_info.commit.hexsha
+    return last_commits
+
+
+def update(remote, branch):
+    print('pushing %s' % branch)
+    remote.push('origin/%s:refs/heads/%s' % (branch, branch))
 
 
 def launch():
@@ -41,9 +48,27 @@ def launch():
     print('adding destination remote..')
     to_remote = repo.create_remote('to_remote', url=to_repo_url)
 
+    # fetch last commit of each branch
+    last_commits = get_last_commits(repo.remotes.origin, branches)
+    print('latest commits: ', last_commits)
+    
+    # force the first update (push)
+    for branch in branches:
+        update(to_remote, branch)
+
     while (True):
         print("update..")
-        update(to_remote, branches)
+
+        # fetch last commit of each branch
+        last_commits_check = get_last_commits(repo.remotes.origin, branches)
+
+        for branch in branches:
+            # if commit changed, update
+            if last_commits[branch] != last_commits_check[branch]:
+                print('%s changed!' % branch)
+                update(to_remote, branch)
+                last_commits[branch] = last_commits_check[branch]
+
         time.sleep(update_period)
 
 
