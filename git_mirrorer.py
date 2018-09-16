@@ -65,7 +65,7 @@ def launch():
         for branch in branches:
             # if commit changed, update
             if last_commits[branch] != last_commits_check[branch]:
-                print('%s changed!' % branch)
+                print('%s changed from <%s> to <%s>!' % (branch, last_commits[branch], last_commits_check[branch]))
                 update(to_remote, branch)
                 last_commits[branch] = last_commits_check[branch]
 
