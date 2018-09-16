@@ -32,15 +32,15 @@ def get_last_commits(remote, branches):
 
 
 def update(remote, branch):
-    print('pushing %s' % branch)
+    print('pushing %s!' % branch)
     remote.push('origin/%s:refs/heads/%s' % (branch, branch))
 
 
 def launch():
-    print('will update every: ', update_period)
+    print('will update every:', update_period)
 
     branches = extract_branches(branches_list)
-    print('will mirror branches: ', branches)
+    print('will mirror branches:', branches)
 
     # init repo (we do not actually need to keep an updated clone)
     print('cloning origin repo..')
@@ -50,14 +50,14 @@ def launch():
 
     # fetch last commit of each branch
     last_commits = get_last_commits(repo.remotes.origin, branches)
-    print('latest commits: ', last_commits)
+    print('latest commits:', last_commits)
     
-    # force the first update (push)
+    # force the first update
     for branch in branches:
         update(to_remote, branch)
 
     while (True):
-        print("update..")
+        print('checking..')
 
         # fetch last commit of each branch
         last_commits_check = get_last_commits(repo.remotes.origin, branches)
