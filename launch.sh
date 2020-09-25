@@ -10,4 +10,4 @@ docker run -d -it --rm \
 -e DESTINATION_URL \
 -e BRANCHES_LIST \
 -e UPDATE_PERIOD \
---name git_mirrorer git_mirrorer:latest
+--name git_mirrorer christophebedard/git_mirrorer:latest
