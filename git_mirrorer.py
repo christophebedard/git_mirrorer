@@ -10,7 +10,11 @@
 import os
 import sys
 import time
-from git import Repo
+from typing import Dict
+from typing import List
+
+import git
+
 
 from_repo_url = os.environ['ORIGIN_URL']
 to_repo_url = os.environ['DESTINATION_URL']
@@ -18,12 +22,12 @@ branches_list = os.environ['BRANCHES_LIST']
 update_period = int(os.getenv('UPDATE_PERIOD', 60))
 
 
-def extract_branches(branches_list):
+def extract_branches(branches_list: str) -> List[str]:
     # assuming [a,b,c,d]
     return branches_list[1:-1].split(',')
 
 
-def get_last_commits(remote, branches):
+def get_last_commits(remote: git.Remote, branches: List[str]) -> Dict[str, str]:
     last_commits = {}
     for branch in branches:
         fetch_info = remote.fetch(branch)[0]
@@ -31,12 +35,12 @@ def get_last_commits(remote, branches):
     return last_commits
 
 
-def update(remote, branch):
-    print('pushing %s!' % branch)
-    remote.push('origin/%s:refs/heads/%s' % (branch, branch))
+def update(remote: git.Remote, branch: str) -> None:
+    print(f'pushing {branch}!')
+    remote.push(f'origin/{branch}:refs/heads/{branch}')
 
 
-def launch():
+def launch() -> None:
     print('will update every:', update_period)
 
     branches = extract_branches(branches_list)
@@ -44,7 +48,7 @@ def launch():
 
     # init repo (we do not actually need to keep an updated clone)
     print('cloning origin repo..')
-    repo = Repo.clone_from(from_repo_url, 'repo_dir')
+    repo = git.Repo.clone_from(from_repo_url, 'repo_dir')
     print('adding destination remote..')
     to_remote = repo.create_remote('to_remote', url=to_repo_url)
 
@@ -65,7 +69,7 @@ def launch():
         for branch in branches:
             # if commit changed, update
             if last_commits[branch] != last_commits_check[branch]:
-                print('%s changed from <%s> to <%s>!' % (branch, last_commits[branch], last_commits_check[branch]))
+                print(f'{branch} changed from <{last_commits[branch]}> to <{last_commits_check[branch]}>!')
                 update(to_remote, branch)
                 last_commits[branch] = last_commits_check[branch]
 
