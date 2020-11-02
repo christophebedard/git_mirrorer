@@ -25,7 +25,7 @@ update_period = int(os.getenv('UPDATE_PERIOD', 60))
 
 def extract_branches(branches_list: str) -> List[str]:
     """Extract branches list from string representation."""
-    # assuming [a,b,c,d]
+    # Assuming [a,b,c,d]
     return branches_list[1:-1].split(',')
 
 
@@ -51,28 +51,28 @@ def launch() -> None:
     branches = extract_branches(branches_list)
     print('will mirror branches:', branches)
 
-    # init repo (we do not actually need to keep an updated clone)
+    # Init repo (we do not actually need to keep an updated clone)
     print('cloning origin repo..')
     repo = git.Repo.clone_from(from_repo_url, 'repo_dir')
     print('adding destination remote..')
     to_remote = repo.create_remote('to_remote', url=to_repo_url)
 
-    # fetch last commit of each branch
+    # Fetch last commit of each branch
     last_commits = get_last_commits(repo.remotes.origin, branches)
     print('latest commits:', last_commits)
 
-    # force the first update
+    # Force the first update
     for branch in branches:
         update(to_remote, branch)
 
     while (True):
         print('checking..')
 
-        # fetch last commit of each branch
+        # Fetch last commit of each branch
         last_commits_check = get_last_commits(repo.remotes.origin, branches)
 
         for branch in branches:
-            # if commit changed, update
+            # If commit changed, update
             if last_commits[branch] != last_commits_check[branch]:
                 print((
                     f'{branch} changed from <{last_commits[branch]}> '
