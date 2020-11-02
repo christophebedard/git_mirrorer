@@ -1,14 +1,15 @@
 #!/usr/bin/env python
+"""
+Script for mirroring git remotes.
 
-## Script for mirroring git remotes
-# Make sure to set the appropriate environment variables:
-#   ORIGIN_URL:       remote URL of the origin repo
-#   DESTINATION_URL:  remote URL of the destination repo
-#   BRANCHES_LIST:    list of branches to update, e.g. [branch1,branch2,branch3]
-#   UPDATE_PERIOD:    delay between updates (seconds) [default: 60]
+Make sure to set the appropriate environment variables:
+  ORIGIN_URL:       remote URL of the origin repo
+  DESTINATION_URL:  remote URL of the destination repo
+  BRANCHES_LIST:    list of branches to update, e.g. [branch1,branch2,branch3]
+  UPDATE_PERIOD:    delay between updates (seconds) [default: 60]
+"""
 
 import os
-import sys
 import time
 from typing import Dict
 from typing import List
@@ -23,11 +24,13 @@ update_period = int(os.getenv('UPDATE_PERIOD', 60))
 
 
 def extract_branches(branches_list: str) -> List[str]:
+    """Extract branches list from string representation."""
     # assuming [a,b,c,d]
     return branches_list[1:-1].split(',')
 
 
 def get_last_commits(remote: git.Remote, branches: List[str]) -> Dict[str, str]:
+    """Get last commit of each given branch for the given remote."""
     last_commits = {}
     for branch in branches:
         fetch_info = remote.fetch(branch)[0]
@@ -36,11 +39,13 @@ def get_last_commits(remote: git.Remote, branches: List[str]) -> Dict[str, str]:
 
 
 def update(remote: git.Remote, branch: str) -> None:
+    """Update given remote by pushing the given branch."""
     print(f'pushing {branch}!')
     remote.push(f'origin/{branch}:refs/heads/{branch}')
 
 
 def launch() -> None:
+    """Launch and run."""
     print('will update every:', update_period)
 
     branches = extract_branches(branches_list)
@@ -55,7 +60,7 @@ def launch() -> None:
     # fetch last commit of each branch
     last_commits = get_last_commits(repo.remotes.origin, branches)
     print('latest commits:', last_commits)
-    
+
     # force the first update
     for branch in branches:
         update(to_remote, branch)
@@ -69,7 +74,10 @@ def launch() -> None:
         for branch in branches:
             # if commit changed, update
             if last_commits[branch] != last_commits_check[branch]:
-                print(f'{branch} changed from <{last_commits[branch]}> to <{last_commits_check[branch]}>!')
+                print((
+                    f'{branch} changed from <{last_commits[branch]}> '
+                    'to <{last_commits_check[branch]}>!'
+                ))
                 update(to_remote, branch)
                 last_commits[branch] = last_commits_check[branch]
 
