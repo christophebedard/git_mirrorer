@@ -10,6 +10,7 @@ Make sure to set the appropriate environment variables:
 """
 
 import os
+import shutil
 import time
 from typing import Dict
 from typing import List
@@ -29,6 +30,13 @@ def extract_branches(branches_list: str) -> List[str]:
     return branches_list[1:-1].split(',')
 
 
+def delete_directory_if_exists(directory: str) -> None:
+    """Delete the directory if it exists."""
+    if os.path.isdir(directory):
+        print(f'deleting directory: {directory}')
+        shutil.rmtree(directory)
+
+
 def get_last_commits(remote: git.Remote, branches: List[str]) -> Dict[str, str]:
     """Get last commit of each given branch for the given remote."""
     last_commits = {}
@@ -44,7 +52,7 @@ def update(remote: git.Remote, branch: str) -> None:
     remote.push(f'origin/{branch}:refs/heads/{branch}')
 
 
-def launch() -> None:
+def launch(repo_directory: str = 'repo_dir') -> None:
     """Launch and run."""
     print('will update every:', update_period)
 
@@ -52,8 +60,9 @@ def launch() -> None:
     print('will mirror branches:', branches)
 
     # Init repo (we do not actually need to keep an updated clone)
+    delete_directory_if_exists(repo_directory)
     print('cloning origin repo..')
-    repo = git.Repo.clone_from(from_repo_url, 'repo_dir')
+    repo = git.Repo.clone_from(from_repo_url, repo_directory)
     print('adding destination remote..')
     to_remote = repo.create_remote('to_remote', url=to_repo_url)
 
